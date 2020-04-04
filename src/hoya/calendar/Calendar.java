@@ -19,25 +19,6 @@ public class Calendar {
 		System.out.println("22 23 24 25 26 27 28");
 	}
 
-	public static void main(String[] args) {
-
-		String PROMPT = "cal> ";
-		Scanner scanner = new Scanner(System.in);
-		Calendar cal = new Calendar();
-
-		System.out.println("반복횟수를 입력하세요");
-		int repeat = scanner.nextInt();
-
-		for (int i = 0; i < repeat; i++) {
-			System.out.println("달을 입력하세요.");
-			System.out.print(PROMPT);
-			int month = scanner.nextInt();
-			System.out.printf("%d월은 %d일까지 있습니다.\n", month, cal.getMaxDaysOfMonth(month));
-		}
-
-		System.out.println("exit");
-		scanner.close();
-
-	}
+	
 
 }
