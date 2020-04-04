@@ -21,6 +21,7 @@ public class Calendar {
 
 	public static void main(String[] args) {
 
+		String PROMPT = "cal> ";
 		Scanner scanner = new Scanner(System.in);
 		Calendar cal = new Calendar();
 
@@ -29,6 +30,7 @@ public class Calendar {
 
 		for (int i = 0; i < repeat; i++) {
 			System.out.println("달을 입력하세요.");
+			System.out.print(PROMPT);
 			int month = scanner.nextInt();
 			System.out.printf("%d월은 %d일까지 있습니다.\n", month, cal.getMaxDaysOfMonth(month));
 		}
