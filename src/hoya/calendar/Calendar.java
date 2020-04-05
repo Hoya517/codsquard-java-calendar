@@ -1,29 +1,60 @@
 package hoya.calendar;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class Calendar {
 
 	private final int[] MAX_DAYS = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	private final int[] LEAP_MAX_DAYS = { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	private final String SAVE_FILE = "calendar.dat";
+	private HashMap<Date, PlanItem> planMap;
 
-	private HashMap <Date, PlanItem> planMap;
-	
 	public Calendar() {
 		planMap = new HashMap <Date, PlanItem>();
-	} 
-	
-	public void registerPlan(String strDate, String plan){
+		File f = new File(SAVE_FILE);
+		if (!f.exists())
+			return;
+		try {
+			Scanner s = new Scanner(f);
+			while(s.hasNext()) {
+				String date = s.next();
+				String detail = s.next();
+				PlanItem p = new PlanItem(date, detail);
+				planMap.put(p.getDate(), p);
+			}
+			s.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void registerPlan(String strDate, String plan) {
 		PlanItem p = new PlanItem(strDate, plan);
 		planMap.put(p.getDate(), p);
+
+		File f = new File(SAVE_FILE);
+		String item = p.saveString();
+		try {
+			FileWriter fw = new FileWriter(f, true);
+			fw.write(item);
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public PlanItem searchPlan(String strDate) {
 		Date date = PlanItem.getDatefromString(strDate);
 		return planMap.get(date);
 	}
-	
+
 	public boolean isLeapYear(int year) {
 		if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))
 			return true;
@@ -46,7 +77,7 @@ public class Calendar {
 
 		// get weekday automatically
 		int weekday = getWeekDay(year, month, 1);
-		
+
 		// print blank space
 		for (int i = 0; i < weekday; i++) {
 			System.out.print("   ");
@@ -75,25 +106,24 @@ public class Calendar {
 
 	private int getWeekDay(int year, int month, int day) {
 		int syear = 1970;
-		final int STANDARD_WEEKDAY = 4; //1970.1.1 = Thursday
-		
+		final int STANDARD_WEEKDAY = 4; // 1970.1.1 = Thursday
+
 		int count = 0;
-		
-		for(int i = syear; i < year; i++) {
+
+		for (int i = syear; i < year; i++) {
 			int delta = isLeapYear(i) ? 366 : 365;
 			count += delta;
 		}
-		
-		for(int i = 1; i < month; i++) {
+
+		for (int i = 1; i < month; i++) {
 			int delta = getMaxDaysOfMonth(year, i);
 			count += delta;
 		}
-		
+
 		count = day - 1;
-		
+
 		int weekday = (count + STANDARD_WEEKDAY) % 7;
 		return weekday;
 	}
 
-	
 }
